@@ -1,0 +1,84 @@
+{% extends 'unified_communications/navbar.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to CONNX Consumer Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;  /* Set a clean font */
+            background-color: #f0f0f0;      /* Light background for a softer look */
+            margin: 0;                      /* Remove default margin */
+            padding: 20px;                  /* Add padding around the body */
+        }
+
+        .container {
+            max-width: 600px;               /* Set a maximum width for the content */
+            margin: auto;                   /* Center the container */
+            text-align: center;             /* Center text within the container */
+            background-color: white;        /* White background for the container */
+            padding: 30px;                  /* Padding for spacing */
+            border-radius: 8px;             /* Rounded corners */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+        }
+
+        h1 {
+            color: blue;                    /* Heading color */
+            margin-bottom: 20px;           /* Space below the heading */
+        }
+
+        .button-row {
+            display: flex;                  /* Use flexbox for alignment */
+            justify-content: center;        /* Center the buttons */
+            margin-bottom: 20px;           /* Space between rows */
+        }
+
+        a {
+            margin: 10px;                  /* Space between buttons */
+            padding: 10px 20px;            /* Padding for buttons */
+            font-size: 16px;               /* Font size for button text */
+            cursor: pointer;                /* Pointer cursor on hover */
+            border: 1px solid #007BFF;     /* Button border */
+            background-color: #007BFF;     /* Button background color */
+            color: white;                   /* Button text color */
+            border-radius: 4px;            /* Rounded button corners */
+            text-decoration: none;          /* Remove underline from links */
+            display: inline-block;          /* Make links behave like buttons */
+            transition: background-color 0.3s; /* Smooth transition for hover */
+            flex: 1;                        /* Allow buttons to grow equally */
+            max-width: 200px;               /* Optional: Set a max width for buttons */
+            text-align: center;             /* Center text within the buttons */
+        }
+
+        a:hover {
+            background-color: #0056b3;     /* Darker blue on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the CONNX Consumer Portal!</h1>
+
+        <div class="button-row">
+            <a href="/unified_communications/" target="_blank">UCaaS</a>
+            <a href="/contact_center/" target="_blank">CCaaS</a>
+        </div>
+
+        <div class="button-row">
+            <a href="/sdwan/" target="_blank">SDWAN</a>
+            <a href="/switches/" target="_blank">Switches</a>
+        </div>
+
+        <div class="button-row">
+            <a href="/sip_trunk/" target="_blank">Sip Trunk</a>
+            <a href="/wifi/" target="_blank">WiFi</a>
+        </div>
+
+        <div class="button-row">
+            <a href="/SBCaas/" target="_blank">SBCaaS</a>
+            <a href="/managed_services/" target="_blank">Managed Services</a>
+        </div>
+    </div>
+</body>
+</html>

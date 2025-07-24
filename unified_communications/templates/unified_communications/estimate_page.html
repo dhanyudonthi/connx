@@ -1,0 +1,57 @@
+{% extends 'unified_communications/base.html' %}
+{% block title %}Estimate Details{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="text-center">Estimate Details</h2>
+    <p><strong>Email:</strong> {{ estimate.name }}</p>
+    <p><strong>Estimate Name:</strong> {{ estimate.estimate_name }}</p>
+    <p><strong>Intended Use:</strong> {{ estimate.intended_use }}</p>
+    <p><strong>Unique ID:</strong> {{ estimate.unique_id }}</p>
+
+    <h3 class="mt-4">Products</h3>
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link" id="ucaas-tab" data-bs-toggle="tab" data-bs-target="#ucaas" role="tab">UCaaS</a></li>
+        <li class="nav-item"><a class="nav-link active" id="ccaas-tab" data-bs-toggle="tab" data-bs-target="#ccaas" role="tab">CCaaS</a></li>
+        <li class="nav-item"><a class="nav-link" id="wifi-tab" data-bs-toggle="tab" data-bs-target="#wifi" role="tab">Wi-Fi</a></li>
+        <li class="nav-item"><a class="nav-link" id="ms-tab" data-bs-toggle="tab" data-bs-target="#ms" role="tab">Managed Services</a></li>
+        <li class="nav-item"><a class="nav-link" id="sdwan-tab" data-bs-toggle="tab" data-bs-target="#sdwan" role="tab">SD-WAN</a></li>
+        <li class="nav-item"><a class="nav-link" id="sbc-tab" data-bs-toggle="tab" data-bs-target="#sbc" role="tab">SBCaaS</a></li>
+        <li class="nav-item"><a class="nav-link" id="sip-tab" data-bs-toggle="tab" data-bs-target="#sip" role="tab">SIP Trunk</a></li>
+        <li class="nav-item"><a class="nav-link" id="switches-tab" data-bs-toggle="tab" data-bs-target="#switches" role="tab">Switches</a></li>
+    </ul>
+    <div class="tab-content mt-3">
+        <div class="tab-pane fade" id="ucaas" role="tabpanel" aria-labelledby="ucaas-tab">
+            {% include 'unified_communications/landing_page.html' %}
+        </div>
+
+        <div class="tab-pane fade show active" id="ccaas" role="tabpanel" aria-labelledby="ccaas-tab">
+            {% include 'unified_communications/ccaas_content.html' %}
+        </div>
+
+        <div class="tab-pane fade" id="wifi" role="tabpanel" aria-labelledby="wifi-tab">
+            <p>Wi-Fi content goes here.</p>
+        </div>
+
+        <div class="tab-pane fade" id="ms" role="tabpanel" aria-labelledby="ms-tab">
+            <p>Managed Services content goes here.</p>
+        </div>
+
+        <div class="tab-pane fade" id="sdwan" role="tabpanel" aria-labelledby="sdwan-tab">
+            <p>SD-WAN content goes here.</p>
+        </div>
+
+        <div class="tab-pane fade" id="sbc" role="tabpanel" aria-labelledby="sbc-tab">
+            <p>SBCaaS content goes here.</p>
+        </div>
+
+        <div class="tab-pane fade" id="sip" role="tabpanel" aria-labelledby="sip-tab">
+            <p>SIP Trunk content goes here.</p>
+        </div>
+
+        <div class="tab-pane fade" id="switches" role="tabpanel" aria-labelledby="switches-tab">
+            <p>Switches content goes here.</p>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

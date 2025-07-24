@@ -1,0 +1,23 @@
+{% extends 'unified_communications/base.html' %}
+{% block title %}Create Estimate{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="card p-4 shadow-sm" style="width: 100%; max-width: 600px;">
+        <h2 class="text-center mb-4">Create Estimate</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="name" value="{{ user.username }}">
+            <input type="hidden" name="email" value="{{ user.email }}">
+            <div class="form-group mb-3">
+                <label for="estimate_name">Estimate Name:</label>
+                <input type="text" id="estimate_name" name="estimate_name" class="form-control" value="{{ initial_data.estimate_name }}" required>
+            </div>
+            <div class="form-group mb-3">
+                <label for="intended_use">Intended Use:</label>
+                <textarea id="intended_use" name="intended_use" class="form-control" rows="4" placeholder="Describe the intended use of the estimate" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Create Estimate</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unified Communications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            border-bottom: 2px solid #2c3e50;
+        }
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #2c3e50;
+            border-radius: 4px;
+            width: 30%;
+            transition: background-color 0.3s;
+        }
+        .tab:hover {
+            background-color: #2c3e50;
+            color: white;
+        }
+        .active-tab {
+            background-color:#2c3e50;
+            color: white;
+        }
+        .form-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .active-section {
+            display: block;
+        }
+        .form-group {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+        label {
+            font-size: 16px;
+            width: 60%;
+        }
+        input[type="number"], input[type="text"] {
+            width: 35%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #2c3e50;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show the first section by default
+            $('#webex_calling_wholesale').addClass('active-tab');
+            $('#webex_calling_wholesale_form').addClass('active-section');
+
+            // Tab click functionality
+            $('.tab').click(function() {
+                var target = $(this).data('target');
+
+                // Remove active class from all tabs and sections
+                $('.tab').removeClass('active-tab');
+                $('.form-section').removeClass('active-section');
+
+                // Add active class to the clicked tab and corresponding section
+                $(this).addClass('active-tab');
+                $('#' + target).addClass('active-section');
+            });
+
+            // Show quantity input when a phone checkbox is selected
+            $('input[name="phoneCheckbox"]').change(function() {
+                var phone = $(this).val();
+                if ($(this).is(':checked')) {
+                    $('#phone_count_inputs').append(
+                        `<div class="form-group" id="${phone}_group">
+                            <label for="${phone}_count">${phone} Quantity:</label>
+                            <input type="number" id="${phone}_count" name="${phone}_count" min="0" placeholder="Enter quantity" required>
+                        </div>`
+                    );
+                } else {
+                    $(`#${phone}_group`).remove();
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    {% extends 'unified_communications/base.html' %}
+    
+    {% block content %}
+    
+    <h1>Unified Communications Pricing Tool</h1>
+    <!-- Tab navigation -->
+    <div class="tabs">
+        <div class="tab" data-target="webex_calling_wholesale_form">Webex Calling Wholesale</div>
+        <div class="tab" data-target="webex_calling_flex_form">Webex Calling Flex</div>
+        <div class="tab" data-target="on_prem_ucm_hybrid_form">On-Prem UCM Hybrid</div>
+    </div>
+
+    <!-- Webex Calling Wholesale Form -->
+    <div id="webex_calling_wholesale_form" class="form-section">
+        <h2>Webex Calling Wholesale Pricing</h2>
+        <form action="{% url 'calculate_pricing' %}" method="post">
+            {% csrf_token %}
+        <!-- Licenses Section -->
+        <div class="section">
+            <h2>Licenses</h2>
+            <div class="form-group">
+                <label for="webex_user_count">Webex User Count:</label>
+                <input type="number" id="webex_user_count" name="webex_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="enhanced_calling_user_count">Enhanced Calling User Count:</label>
+                <input type="number" id="enhanced_calling_user_count" name="enhanced_calling_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="common_area_user_count">Common Area User Count:</label>
+                <input type="number" id="common_area_user_count" name="common_area_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="customer_experience_user_count">Customer Experience User Count:</label>
+                <input type="number" id="customer_experience_user_count" name="customer_experience_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+        </div>
+
+        <!-- Hardware Section -->
+        <div class="section">
+            <h2>Hardware</h2>
+
+            <!-- Phones Subsection -->
+            <div class="sub-section">
+                <h3>Phones</h3>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9841">Cisco 9841</label>
+                    <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9851">Cisco 9851</label>
+                    <label><input type="checkbox" name="phoneCheckbox" value="Cisco_8832">Cisco 8832</label>
+                    <label><input type="checkbox" name="phoneCheckbox" value="Cisco_8845">Cisco 8845</label>
+                </div>
+                <div id="phone_count_inputs"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="analog_gateway">Analog Gateway:</label>
+                <input type="number" id="analog_gateway" name="analog_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+
+            <div class="form-group">
+                <label for="survivability_gateway">Survivability Gateway:</label>
+                <input type="number" id="survivability_gateway" name="survivability_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+        </div>
+
+        <label for="professional_services">Would you like to use professional services?</label>
+        <select id="professional_services" name="professional_services" onchange="toggleServiceSection()">
+            <option value="no">No</option>
+            <option value="yes">Yes</option>
+        </select>
+        
+        <!-- Section for collecting professional services input -->
+        <div id="ps_section" style="display: none;">
+            <h3>Professional Services</h3>
+            
+            <!-- Site Survey -->
+            <label for="site_survey">Site Survey</label><br>
+            
+            <input type="checkbox" id="site_survey_small" name="site_survey[]" value="small" onchange="toggleQuantityInput('small')">
+            <label for="site_survey_small">Small</label>
+            <input type="number" id="site_survey_small_qty" name="site_survey_small_qty" placeholder="Enter quantity" style="display: none;"><br>
+        
+            <input type="checkbox" id="site_survey_medium" name="site_survey[]" value="medium" onchange="toggleQuantityInput('medium')">
+            <label for="site_survey_medium">Medium</label>
+            <input type="number" id="site_survey_medium_qty" name="site_survey_medium_qty" placeholder="Enter quantity" style="display: none;"><br>
+        
+            <input type="checkbox" id="site_survey_large" name="site_survey[]" value="large" onchange="toggleQuantityInput('large')">
+            <label for="site_survey_large">Large</label>
+            <input type="number" id="site_survey_large_qty" name="site_survey_large_qty" placeholder="Enter quantity" style="display: none;"><br>
+            
+            <!-- Remote Implementation -->
+            <label for="remote_implementation">Remote Implementation per User</label>
+            <input type="checkbox" id="remote_implementation" name="remote_implementation" value="yes" onchange="toggleRemoteQty()">
+            <input type="number" id="remote_implementation_qty" name="remote_implementation_qty" placeholder="Enter number of users" style="display: none;"><br>
+        
+            <!-- User Training -->
+            <label for="user_training">User Training per Batch</label>
+            <input type="checkbox" id="user_training" name="user_training" value="yes" onchange="toggleUserTrainingQty()">
+            <input type="number" id="user_training_qty" name="user_training_qty" placeholder="Enter number of batches" style="display: none;"><br>
+        
+            <!-- Admin Training -->
+            <label for="admin_training">Admin Training per Batch</label>
+            <input type="checkbox" id="admin_training" name="admin_training" value="yes" onchange="toggleAdminTrainingQty()">
+            <input type="number" id="admin_training_qty" name="admin_training_qty" placeholder="Enter number of batches" style="display: none;"><br>
+        </div>
+        
+        <button type="submit">Calculate Pricing</button>
+       </form> 
+        <script>
+            // Function to toggle the professional services section
+            function toggleServiceSection() {
+                const section = document.getElementById("ps_section");
+                const selectedValue = document.getElementById("professional_services").value;
+                section.style.display = selectedValue === "yes" ? "block" : "none";
+            }
+        
+            // Function to toggle quantity input for Site Survey options
+            function toggleQuantityInput(type) {
+                const input = document.getElementById(`site_survey_${type}_qty`);
+                const checkbox = document.getElementById(`site_survey_${type}`);
+                input.style.display = checkbox.checked ? "inline" : "none";
+            }
+        
+            // Function to toggle quantity input for Remote Implementation
+            function toggleRemoteQty() {
+                const input = document.getElementById("remote_implementation_qty");
+                const checkbox = document.getElementById("remote_implementation");
+                input.style.display = checkbox.checked ? "inline" : "none";
+            }
+        
+            // Function to toggle quantity input for User Training
+            function toggleUserTrainingQty() {
+                const input = document.getElementById("user_training_qty");
+                const checkbox = document.getElementById("user_training");
+                input.style.display = checkbox.checked ? "inline" : "none";
+            }
+        
+            // Function to toggle quantity input for Admin Training
+            function toggleAdminTrainingQty() {
+                const input = document.getElementById("admin_training_qty");
+                const checkbox = document.getElementById("admin_training");
+                input.style.display = checkbox.checked ? "inline" : "none";
+            }
+        </script>
+        
+
+
+</body>
+</html>
+
+    <!-- Webex Calling Flex Form -->
+    <div id="webex_calling_flex_form" class="form-section">
+        <h2>Webex Calling Flex Pricing</h2>
+        <form action="/unified_communications/calculate_pricing" method="post">
+            {% csrf_token %}
+            <!-- Licenses Section -->
+            <div class="section">
+                <h2>Licenses</h2>
+                <div class="form-group">
+                    <label for="webex_user_count">Webex User Count:</label>
+                    <input type="number" id="webex_user_count" name="webex_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="enhanced_calling_user_count">Enhanced Calling User Count:</label>
+                    <input type="number" id="enhanced_calling_user_count" name="enhanced_calling_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="common_area_user_count">Common Area User Count:</label>
+                    <input type="number" id="common_area_user_count" name="common_area_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="customer_experience_user_count">Customer Experience User Count:</label>
+                    <input type="number" id="customer_experience_user_count" name="customer_experience_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+            </div>
+    
+            <!-- Hardware Section -->
+            <div class="section">
+                <h2>Hardware</h2>
+                <!-- Phones Subsection -->
+                <div class="sub-section">
+                    <h3>Phones</h3>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9841">Cisco 9841</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9861">Cisco 9861</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9842">Cisco 9841</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Conference_phone">Conference Phones</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="DECT">DECT</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Wireless">Wireless Phones</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="kem">KEM Modules</label>
+                    </div>
+                    <div id="phone_count_inputs"></div>
+                </div>
+    
+                <div class="form-group">
+                    <label for="analog_gateway">Analog Gateway:</label>
+                    <input type="number" id="analog_gateway" name="analog_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="survivability_gateway">Survivability Gateway:</label>
+                    <input type="number" id="survivability_gateway" name="survivability_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+            </div>    
+            <button type="submit">Calculate Pricing</button>
+        </form>
+    </div>
+
+    <!-- On-Prem UCM Hybrid Form -->
+    <div id="on_prem_ucm_hybrid_form" class="form-section">
+        <h2>On-Prem UCM Hybrid Pricing</h2>
+        <form action="/unified_communications/calculate_pricing" method="post">
+            {% csrf_token %}
+            <!-- Licenses Section -->
+            <div class="section">
+                <h2>Licenses</h2>
+                <div class="form-group">
+                    <label for="A-FLEX-EAPL_EntW_On-Premises_Calling">A-FLEX-EAPL-EntW On-Premises Calling</label>
+                    <input type="number" id="webex_user_count" name="webex_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+                <div class="form-group">
+                    <label for="common_area_user_count">Common Area User Count:</label>
+                    <input type="number" id="common_area_user_count" name="common_area_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="web_based_attendant_console">Web Based Attendant Console</label>
+                    <input type="number" id="customer_experience_user_count" name="customer_experience_user_count" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+            </div>
+    
+            <!-- More licenses fields here... -->
+            <!-- Hardware Section -->
+            <div class="section">
+                <h2>Hardware</h2>
+    
+                <!-- Phones Subsection -->
+                <div class="sub-section">
+                    <h3>Phones</h3>
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9841">Cisco 9841</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9861">Cisco 9861</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Cisco_9842">Cisco 9841</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Conference_phone">Conference Phones</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="DECT">DECT</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="Wireless">Wireless Phones</label>
+                        <label><input type="checkbox" name="phoneCheckbox" value="kem">KEM Modules</label>
+                    </div>
+                    <div id="phone_count_inputs"></div>
+                </div>
+    
+                <div class="form-group">
+                    <label for="analog_gateway">Analog Gateway:</label>
+                    <input type="number" id="analog_gateway" name="analog_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+    
+                <div class="form-group">
+                    <label for="survivability_gateway">Survivability Gateway:</label>
+                    <input type="number" id="survivability_gateway" name="survivability_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ucm_hardware_count">Hardware Count:</label>
+                <input type="number" id="ucm_hardware_count" name="ucm_hardware_count" min="0" placeholder="Enter count">
+            </div>
+            <div class="form-group">
+                <label for="ucs-server">UCS-server[UCS-C /UCS-C220/UCS-M6 /UCS-M7]</label>
+                <input type="number" id="analog_gateway" name="analog_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+            <div class="form-group">
+                <label for="vm-esx">VM-ESXI License [Depending on number of host]</label>
+                <input type="number" id="analog_gateway" name="analog_gateway" min="0" placeholder="Enter count" onkeydown="preventNonNumericInput(event)" required>
+            </div>
+            <!-- More hardware fields here... -->
+            <button type="submit">Calculate Pricing</button>
+        </form>
+    </div>
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,31 @@
+{% extends 'unified_communications/base.html' %}
+{% block title %}Signup{% endblock %}
+{% block content %}
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="width: 25rem;">
+        <h3 class="text-center mb-4">Signup</h3>
+        <form method="POST" action="{% url 'signup' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="username" class="form-label">Email</label>
+                <input type="email" class="form-control" id="username" name="username" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <div class="mb-3">
+                <label for="user_level" class="form-label">User Level</label>
+                <select name="user_level" id="user_level" class="form-select" required>
+                    <option value="internal">Internal</option>
+                    <option value="external">External</option>
+                </select>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-success btn-block">Sign up</button>
+            </div>
+        </form>
+        <p class="text-center mt-3">Already have an account? <a href="{% url 'user_login' %}">Login</a></p>
+    </div>
+</div>
+{% endblock %}

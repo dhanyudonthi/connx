@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Result</title>
+</head>
+<body>
+    <h1>Pricing Calculation Result</h1>
+    <p>Total Price: ${{ total_price }}</p>
+
+    {% if optional_items_message %}
+        <h2>Optional Items Message:</h2>
+        <p>{{ optional_items_message }}</p>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'index' %}">Go Back</a>
+</body>
+</html>

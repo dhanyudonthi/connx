@@ -1,0 +1,75 @@
+{% extends 'unified_communications/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h1>Pricing Output</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>MFG Part#</th>
+                <th>Description</th>
+                <th>Qty</th>
+                <th>Term in months</th>
+                <th>List Cost</th>
+                <th>Standard Discount</th>
+                <th>Additional Discount</th>
+                <th>Unit Cost</th>
+                <th>Total Cost</th>
+                <th>Gross Margin %</th>
+                <th>Unit Price</th>
+                <th>Total Price</th>
+                <th>Adjusted Gross Margin %</th>
+                <th>Ext. Unit Price</th>
+                <th>Ext. Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for detail in pricing_details %}
+            <tr data-id="{{ detail.id }}">
+                <td>{{ detail.mfg_part }}</td>
+                <td>{{ detail.description }}</td>
+                <td contenteditable="true" data-field="quantity">{{ detail.quantity }}</td>
+                <td contenteditable="true" data-field="term_in_months">{{ detail.term_in_months }}</td>
+                <td>${{ detail.list_cost }}</td>
+                <td>${{ detail.standard_discount }}</td>
+                <td contenteditable="true" data-field="additional_discount">{{ detail.additional_discount }}</td>
+                <td>${{ detail.unit_cost }}</td>
+                <td>${{ detail.total_cost }}</td>
+                <td>{{ detail.gross_margin }}</td>
+                <td>${{ detail.unit_price }}</td>
+                <td>${{ detail.total_price }}</td>
+                <td contenteditable="true" data-field="adjusted_gross_margin">{{ detail.adjusted_gross_margin }}</td>
+                <td>${{ detail.ext_unit_price }}</td>
+                <td>${{ detail.ext_total_price }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.querySelectorAll("[contenteditable=true]").forEach(cell => {
+        cell.addEventListener("blur", function () {
+            const pk = this.closest("tr").dataset.id;
+            const field = this.dataset.field;
+            const value = this.textContent.trim();
+
+            fetch(`/update_pricing_field/${pk}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ field: field, value: value }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload(); // Reload to recalculate values
+                } else {
+                    alert("Failed to update field: " + data.error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

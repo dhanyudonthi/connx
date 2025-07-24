@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing Results</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .total {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        .table {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% extends 'unified_communications/base.html' %}
+    {% block content %}
+    <div class="container mt-5">
+        <div class="text-center">
+            <h1 class="mb-4">Pricing Calculation Summary</h1>
+        </div>
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">Itemized Pricing Details</h4>
+            </div>
+            <div class="card-body">
+                <form id="pricing-form" method="POST">
+                    {% csrf_token %}
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">Item</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Price per Unit</th>
+                                <th scope="col">Discount (%)</th>
+                                <th scope="col">Total</th>
+                                <th scope="col">Extended Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item, quantity, price_per_unit, total in detailed_prices %}
+                            <tr>
+                                <td>{{ item }}</td>
+                                <td>
+                                    <input type="number" class="form-control quantity-input" 
+                                        data-price="{{ price_per_unit }}" 
+                                        data-item="{{ item }}" 
+                                        value="{{ quantity }}" min="0">
+                                </td>
+                                <td>${{ price_per_unit }}</td>
+                                <td>
+                                    <input type="number" class="form-control discount-input" 
+                                        data-price="{{ price_per_unit }}" 
+                                        data-quantity="{{ quantity }}" 
+                                        value="0" min="0" max="100">
+                                </td>
+                                <td class="total-price">${{ total }}</td>
+                                <td class="extended-total">${{ total }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="text-end">
+                        <p class="total">Total Price: <span id="grand-total">${{ total_price }}</span></p>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Pricing</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Update the extended total and grand total when discount or quantity is applied
+        function updateTotals() {
+            let grandTotal = 0;
+            document.querySelectorAll('.extended-total').forEach(extendedTotalCell => {
+                grandTotal += parseFloat(extendedTotalCell.textContent.replace('$', ''));
+            });
+
+            // Update grand total display
+            document.getElementById('grand-total').textContent = `$${grandTotal.toFixed(2)}`;
+        }
+
+        // Update extended total when discount is changed
+        document.querySelectorAll('.discount-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const row = this.closest('tr');
+                const price = parseFloat(row.querySelector('.discount-input').dataset.price);
+                const quantity = parseFloat(row.querySelector('.quantity-input').value);
+                const discount = parseFloat(this.value) || 0;
+
+                // Update extended total (based on discount and quantity)
+                const discountedPrice = price - (price * discount / 100);
+                const extendedTotal = (discountedPrice * quantity).toFixed(2);
+                row.querySelector('.extended-total').textContent = `$${extendedTotal}`;
+
+                updateTotals(); // Update grand total
+            });
+        });
+
+        // Update total and extended total when quantity is changed
+        document.querySelectorAll('.quantity-input').forEach(input => {
+            input.addEventListener('input', function() {
+                const row = this.closest('tr');
+                const price = parseFloat(row.querySelector('.discount-input').dataset.price);
+                const quantity = parseFloat(this.value);
+                const discount = parseFloat(row.querySelector('.discount-input').value) || 0;
+
+                // Update total (based on price and quantity)
+                const total = (price * quantity).toFixed(2);
+                row.querySelector('.total-price').textContent = `$${total}`;
+
+                // Update extended total (based on discount)
+                const discountedPrice = price - (price * discount / 100);
+                const extendedTotal = (discountedPrice * quantity).toFixed(2);
+                row.querySelector('.extended-total').textContent = `$${extendedTotal}`;
+
+                updateTotals(); // Update grand total
+            });
+        });
+
+        // Initialize totals on page load
+        window.onload = updateTotals;
+    </script>
+    {% endblock %}
+</body>
+</html>

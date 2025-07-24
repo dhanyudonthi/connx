@@ -1,0 +1,172 @@
+<style>
+/* General Styling */
+.table {
+  width: 100%;
+  margin-bottom: 20px;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  padding: 12px;
+  text-align: left;
+  border: none;
+}
+
+.table th {
+  background-color: #f4f4f4;
+}
+
+.table td {
+  background-color: #fff;
+}
+
+/* Ensuring tables are evenly spaced */
+.table th, .table td {
+  width: 50%;
+}
+
+</style>
+
+<div class="container mt-4">
+  <h2>CCaaS Pricing Tool</h2>
+
+  <!-- Inner Bootstrap Tabs for CCaaS -->
+  <ul class="nav nav-tabs" id="ccaasInnerTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active" id="subscription-tab" data-bs-toggle="tab" data-bs-target="#subscription" type="button" role="tab" aria-controls="subscription" aria-selected="true">
+        Subscription
+      </button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link" id="service-tab" data-bs-toggle="tab" data-bs-target="#service" type="button" role="tab" aria-controls="service" aria-selected="false">
+        Service
+      </button>
+    </li>
+  </ul>
+<form action="/unified_communications/calculate-pricing" method="post">
+  <div class="tab-content mt-3" id="ccaasInnerTabContent">
+    <!-- Subscription Tab Content -->
+    <div class="tab-pane fade show active" id="subscription" role="tabpanel" aria-labelledby="subscription-tab">
+      <!-- Webex AI Agent -->
+      <div class="dropdown-wrapper">
+        <h5>Webex AI Agent</h5>
+        <div class="dropdown-content">
+          <table class="table">
+            <thead>
+              <tr>
+                <th colspan="2">Webex AI Agent Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Webex AI Agent for Webex Contact Center</td>
+                <td>
+                  <div class="option-with-quantity">
+                    <input type="checkbox" id="ai_agent_checkbox">
+                    <label for="ai_agent_checkbox">AI Agent</label>
+                    <input type="number" class="form-control mt-2 quantity-input" placeholder="Quantity" min="1" value="1" style="display: none;">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    
+
+      <!-- Webex Contact Center -->
+      <div class="dropdown-wrapper">
+        <h5>Webex Contact Center</h5>
+        <div class="dropdown-content">
+          <table class="table">
+            <thead>
+              <tr>
+                <th colspan="2">Webex Contact Center Options</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Webex Contact Center Buying Model</td>
+                <td>
+                  <div class="option-with-quantity">
+                    <input type="checkbox" id="concurrent_checkbox">
+                    <label for="concurrent_checkbox">Concurrent</label>
+                    <input type="number" class="form-control mt-2 quantity-input" placeholder="Quantity" min="1" value="1" style="display: none;">
+                  </div>
+                  <div class="option-with-quantity mt-2">
+                    <input type="checkbox" id="named_checkbox">
+                    <label for="named_checkbox">Named</label>
+                    <input type="number" class="form-control mt-2 quantity-input" placeholder="Quantity" min="1" value="1" style="display: none;">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th colspan="2">Webex Contact Center Addons</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Webex Contact Center Addons</td>
+                <td>
+                  <div class="option-with-quantity">
+                    <input type="checkbox" id="pstn_audio_checkbox">
+                    <label for="pstn_audio_checkbox">PSTN Audio</label>
+                    <input type="number" class="form-control mt-2 quantity-input" placeholder="Quantity" min="1" value="1" style="display: none;">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <div class="option-with-quantity">
+                    <input type="checkbox" id="campaign_management_checkbox">
+                    <label for="campaign_management_checkbox">Campaign Management</label>
+                    <input type="number" class="form-control mt-2 quantity-input" placeholder="Quantity" min="1" value="1" style="display: none;">
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>
+                  <div class="option-with-quantity">
+                    <input type="checkbox" id="recording_storage_checkbox">
+                    <label for="recording_storage_checkbox">Recording Storage</label>
+                    <input type="number" class="form-control mt-2 quantity-input" placeholder="Quantity" min="1" value="1" style="display: none;">
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit">Calculate Pricing</button>
+
+
+    <!-- Service Tab Content -->
+    <div class="tab-pane fade" id="service" role="tabpanel" aria-labelledby="service-tab">
+      <p>No service options available yet.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const checkboxes = document.querySelectorAll('.option-with-quantity input[type="checkbox"]');
+  checkboxes.forEach(function (checkbox) {
+    checkbox.addEventListener('change', function () {
+      const quantityInput = this.parentElement.querySelector('.quantity-input');
+      if (quantityInput) {
+        quantityInput.style.display = this.checked ? 'block' : 'none';
+      }
+    });
+  });
+});
+</script>
+</form>
